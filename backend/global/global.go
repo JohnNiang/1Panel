@@ -28,5 +28,6 @@ var (
 	MonitorCronID  cron.EntryID
 	OneDriveCronID cron.EntryID
 
-	I18n *i18n.Localizer
+	I18n       *i18n.Localizer
+	I18nForCmd *i18n.Localizer
 )

@@ -13,11 +13,14 @@ import (
 	"gorm.io/gorm"
 )
 
-func init() {}
+var language string
+
+func init() {
+	RootCmd.PersistentFlags().StringVarP(&language, "language", "l", "zh", "Set the language (default is 'zh')")
+}
 
 var RootCmd = &cobra.Command{
-	Use:   "1panel",
-	Short: "1Panel ，一款现代化的 Linux 面板",
+	Use: "1panel",
 	RunE: func(cmd *cobra.Command, args []string) error {
 		server.Start()
 		return nil

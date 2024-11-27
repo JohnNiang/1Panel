@@ -2,8 +2,9 @@ package i18n
 
 import (
 	"embed"
-	"github.com/1Panel-dev/1Panel/backend/global"
 	"strings"
+
+	"github.com/1Panel-dev/1Panel/backend/global"
 
 	"github.com/gin-gonic/gin"
 	"github.com/nicksnyder/go-i18n/v2/i18n"
@@ -89,9 +90,54 @@ func UseI18n() gin.HandlerFunc {
 }
 
 func Init() {
+	if bundle != nil {
+		return
+	}
 	bundle = i18n.NewBundle(language.Chinese)
 	bundle.RegisterUnmarshalFunc("yaml", yaml.Unmarshal)
 	_, _ = bundle.LoadMessageFileFS(fs, "lang/zh.yaml")
 	_, _ = bundle.LoadMessageFileFS(fs, "lang/en.yaml")
 	_, _ = bundle.LoadMessageFileFS(fs, "lang/zh-Hant.yaml")
+	_, _ = bundle.LoadMessageFileFS(fs, "lang/fa.yaml")
+}
+
+func UseI18nForCmd(lang string) {
+	if lang == "" {
+		lang = "zh"
+	}
+	if bundle == nil {
+		Init()
+	}
+	global.I18nForCmd = i18n.NewLocalizer(bundle, lang)
+}
+func GetMsgByKeyForCmd(key string) string {
+	if global.I18nForCmd == nil {
+		UseI18nForCmd("")
+	}
+	content, _ := global.I18nForCmd.Localize(&i18n.LocalizeConfig{
+		MessageID: key,
+	})
+	return content
+}
+func GetMsgWithMapForCmd(key string, maps map[string]interface{}) string {
+	if global.I18nForCmd == nil {
+		UseI18nForCmd("")
+	}
+	var content string
+	if maps == nil {
+		content, _ = global.I18nForCmd.Localize(&i18n.LocalizeConfig{
+			MessageID: key,
+		})
+	} else {
+		content, _ = global.I18nForCmd.Localize(&i18n.LocalizeConfig{
+			MessageID:    key,
+			TemplateData: maps,
+		})
+	}
+	content = strings.ReplaceAll(content, ": <no value>", "")
+	if content == "" {
+		return key
+	} else {
+		return content
+	}
 }
