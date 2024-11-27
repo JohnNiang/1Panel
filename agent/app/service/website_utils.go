@@ -954,6 +954,7 @@ func getWebsiteDomains(domains []request.WebsiteDomain, defaultPort int, website
 		if err != nil {
 			return
 		}
+		domainModel.Domain = strings.ToLower(domainModel.Domain)
 		domainModel.Port = domain.Port
 		if domain.Port == 0 {
 			domain.Port = defaultPort
