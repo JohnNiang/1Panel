@@ -1,0 +1,11 @@
+.idea
+ci
+docs
+frontend
+*.mod
+*.sum
+*.md
+*.properties
+Makefile
+*.yaml
+.github
